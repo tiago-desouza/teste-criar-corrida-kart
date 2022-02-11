@@ -5,7 +5,7 @@ import io.github.tiagodesouza.testecriarcorridakart.model.ResultadoCorrida;
 import io.github.tiagodesouza.testecriarcorridakart.repository.DadosCorridaRepository;
 import io.github.tiagodesouza.testecriarcorridakart.service.DadosCorridaService;
 import io.github.tiagodesouza.testecriarcorridakart.service.util.FileHelperDadosCorridaUtil;
-import io.github.tiagodesouza.testecriarcorridakart.service.util.ResultadoCorridaHelper;
+import io.github.tiagodesouza.testecriarcorridakart.service.util.ResultadoCorridaHelperUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,7 +37,7 @@ public class DadosCorridaServiceImpl implements DadosCorridaService {
 
     @Override
     public List<ResultadoCorrida> getResultadoCorrida() {
-        return ResultadoCorridaHelper.resultado(repository);
+        return ResultadoCorridaHelperUtil.resultado(repository);
     }
 
 }

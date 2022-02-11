@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Comparator.*;
 
-public class ResultadoCorridaHelper {
+public class ResultadoCorridaHelperUtil {
 
     public static List<ResultadoCorrida> resultado(DadosCorridaRepository repository) {
 
@@ -44,7 +44,7 @@ public class ResultadoCorridaHelper {
             Duration duration = dadosCorridas.stream()
                     .filter(f -> i.equals(f.getNumeroPiloto()))
                     .map(DadosCorrida::getTempoDaVolta)
-                    .map(ResultadoCorridaHelper::converteStringEmDuration)
+                    .map(ResultadoCorridaHelperUtil::converteStringEmDuration)
                     .reduce(Duration.ZERO, Duration::plus);
 
             int volta = dadosCorridas.stream()
@@ -73,9 +73,9 @@ public class ResultadoCorridaHelper {
 
     private static Duration converteStringEmDuration(String time) {
         String[] times = time.replace(".", ":").split(":");
-        Duration duration = Duration.ofMinutes(Long.parseLong(times[0]));
-        duration = duration.plusSeconds(Long.parseLong(times[1]));
-        duration = duration.plusMillis(Long.parseLong(times[2]));
+        Duration duration = Duration.ofMinutes(Long.parseLong(times[0]))
+                .plusSeconds(Long.parseLong(times[1]))
+                .plusMillis(Long.parseLong(times[2]));
         return duration;
     }
 }
