@@ -23,59 +23,72 @@ public class ResultadoCorridaHelperUtil {
                 .collect(Collectors.toList());
 
 
-        numeroPilotoList.forEach(i -> {
+        numeroPilotoList.forEach(numeroPiloto -> {
 
             ResultadoCorrida resultadoCorrida = new ResultadoCorrida();
 
             dadosCorridas.stream()
-                    .filter(f -> i.equals(f.getNumeroPiloto()))
+                    .filter(f -> numeroPiloto.equals(f.getNumeroPiloto()))
                     .map(DadosCorrida::getNomePiloto)
                     .distinct()
                     .collect(Collectors.toList())
                     .remove("F.MASS");
 
             String nomePiloto = dadosCorridas.stream()
-                    .filter(f -> i.equals(f.getNumeroPiloto()))
+                    .filter(f -> numeroPiloto.equals(f.getNumeroPiloto()))
                     .map(DadosCorrida::getNomePiloto)
                     .distinct()
                     .findFirst()
                     .get();
 
             Duration duration = dadosCorridas.stream()
-                    .filter(f -> i.equals(f.getNumeroPiloto()))
+                    .filter(f -> numeroPiloto.equals(f.getNumeroPiloto()))
                     .map(DadosCorrida::getTempoDaVolta)
                     .map(ResultadoCorridaHelperUtil::converteStringEmDuration)
                     .reduce(Duration.ZERO, Duration::plus);
 
             int volta = dadosCorridas.stream()
-                    .filter(f -> i.equals(f.getNumeroPiloto()))
+                    .filter(f -> numeroPiloto.equals(f.getNumeroPiloto()))
                     .mapToInt(DadosCorrida::getVolta)
                     .max().orElseThrow(NoSuchElementException::new);
 
-            resultadoCorrida.setNumeroPiloto(i);
+            resultadoCorrida.setNumeroPiloto(numeroPiloto);
             resultadoCorrida.setNomePiloto(nomePiloto);
             resultadoCorrida.setQteVoltasCompletadas(volta);
-            resultadoCorrida.setTempoTotalProva(duration);
+            resultadoCorrida.setTempoTotalProva(converteDurationEmString(duration));
 
             resultadoCorridas.add(resultadoCorrida);
         });
 
-        resultadoCorridas.sort(comparing(ResultadoCorrida::getTempoTotalProva));
-
-        int posicao = 1;
-        for (ResultadoCorrida resultadoCorrida : resultadoCorridas) {
-            resultadoCorrida.setPosicao(posicao);
-            posicao++;
-        }
+        retornarPosicaoFinalDaCorrida(resultadoCorridas);
 
         return resultadoCorridas;
     }
 
+    private static void retornarPosicaoFinalDaCorrida(List<ResultadoCorrida> resultadoCorridas) {
+        int posicao = 1;
+
+        resultadoCorridas.sort(comparing(ResultadoCorrida::getTempoTotalProva));
+
+        for (ResultadoCorrida resultadoCorrida : resultadoCorridas) {
+            resultadoCorrida.setPosicao(posicao);
+            posicao++;
+        }
+    }
+
     private static Duration converteStringEmDuration(String time) {
         String[] times = time.replace(".", ":").split(":");
-        Duration duration = Duration.ofMinutes(Long.parseLong(times[0]))
+        return Duration.ofMinutes(Long.parseLong(times[0]))
                 .plusSeconds(Long.parseLong(times[1]))
                 .plusMillis(Long.parseLong(times[2]));
-        return duration;
+    }
+
+    private static String converteDurationEmString(Duration duration) {
+
+        String time = duration.toString();
+
+        return time.replace("PT", "")
+                .replace("M", ":")
+                .replace("S", "");
     }
 }

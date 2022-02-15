@@ -1,6 +1,5 @@
 package io.github.tiagodesouza.testecriarcorridakart.model;
 
-import java.time.Duration;
 import java.util.Objects;
 
 public class ResultadoCorrida {
@@ -11,7 +10,7 @@ public class ResultadoCorrida {
     private Integer numeroPiloto;
     private String nomePiloto;
     private Integer qteVoltasCompletadas;
-    private Duration tempoTotalProva;
+    private String tempoTotalProva;
 
     public Integer getPosicao() {
         return posicao;
@@ -45,11 +44,11 @@ public class ResultadoCorrida {
         this.qteVoltasCompletadas = qteVoltasCompletadas;
     }
 
-    public Duration getTempoTotalProva() {
+    public String getTempoTotalProva() {
         return tempoTotalProva;
     }
 
-    public void setTempoTotalProva(Duration tempoTotalProva) {
+    public void setTempoTotalProva(String tempoTotalProva) {
         this.tempoTotalProva = tempoTotalProva;
     }
 
