@@ -5,60 +5,38 @@ import io.github.tiagodesouza.testecriarcorridakart.model.ResultadoCorrida;
 import io.github.tiagodesouza.testecriarcorridakart.repository.DadosCorridaRepository;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import static java.util.Comparator.*;
+import static java.util.Comparator.comparing;
 
 public class ResultadoCorridaHelperUtil {
 
     public static List<ResultadoCorrida> resultado(DadosCorridaRepository repository) {
 
         List<DadosCorrida> dadosCorridas = repository.findAll();
-        List<ResultadoCorrida> resultadoCorridas = new ArrayList<>();
 
-        List<Integer> numeroPilotoList = dadosCorridas.stream()
-                .map(DadosCorrida::getNumeroPiloto)
-                .distinct()
+        Map<Integer, ResultadoCorrida> resultadoCorridaMap = dadosCorridas.stream()
+                .map(dadosCorrida -> {
+                    ResultadoCorrida resultadoCorrida = new ResultadoCorrida();
+                    resultadoCorrida.setNumeroPiloto(dadosCorrida.getNumeroPiloto());
+                    resultadoCorrida.setNomePiloto(dadosCorrida.getNomePiloto());
+                    resultadoCorrida.setQteVoltasCompletadas(dadosCorrida.getVolta());
+                    resultadoCorrida.setTempoTotalProva(dadosCorrida.getTempoDaVolta());
+                    return resultadoCorrida;
+                }).collect(Collectors.toMap(ResultadoCorrida::getNumeroPiloto, resultadoCorrida -> resultadoCorrida, (t, t2) -> {
+                    Duration time = converteStringEmDuration(t.getTempoTotalProva()).plus(converteStringEmDuration(t2.getTempoTotalProva()));
+                    t.setTempoTotalProva(converteDurationEmString(time));
+                    t.setQteVoltasCompletadas(t2.getQteVoltasCompletadas());
+                    return t;
+                }));
+
+        List<ResultadoCorrida> resultadoCorridas = resultadoCorridaMap.values()
+                .stream()
+                .sorted(comparing(ResultadoCorrida::getTempoTotalProva))
+                .sorted(comparing(ResultadoCorrida::getQteVoltasCompletadas).reversed())
                 .collect(Collectors.toList());
-
-
-        numeroPilotoList.forEach(numeroPiloto -> {
-
-            ResultadoCorrida resultadoCorrida = new ResultadoCorrida();
-
-            dadosCorridas.stream()
-                    .filter(f -> numeroPiloto.equals(f.getNumeroPiloto()))
-                    .map(DadosCorrida::getNomePiloto)
-                    .distinct()
-                    .collect(Collectors.toList())
-                    .remove("F.MASS");
-
-            String nomePiloto = dadosCorridas.stream()
-                    .filter(f -> numeroPiloto.equals(f.getNumeroPiloto()))
-                    .map(DadosCorrida::getNomePiloto)
-                    .distinct()
-                    .findFirst()
-                    .get();
-
-            Duration duration = dadosCorridas.stream()
-                    .filter(f -> numeroPiloto.equals(f.getNumeroPiloto()))
-                    .map(DadosCorrida::getTempoDaVolta)
-                    .map(ResultadoCorridaHelperUtil::converteStringEmDuration)
-                    .reduce(Duration.ZERO, Duration::plus);
-
-            int volta = dadosCorridas.stream()
-                    .filter(f -> numeroPiloto.equals(f.getNumeroPiloto()))
-                    .mapToInt(DadosCorrida::getVolta)
-                    .max().orElseThrow(NoSuchElementException::new);
-
-            resultadoCorrida.setNumeroPiloto(numeroPiloto);
-            resultadoCorrida.setNomePiloto(nomePiloto);
-            resultadoCorrida.setQteVoltasCompletadas(volta);
-            resultadoCorrida.setTempoTotalProva(converteDurationEmString(duration));
-
-            resultadoCorridas.add(resultadoCorrida);
-        });
 
         retornarPosicaoFinalDaCorrida(resultadoCorridas);
 
@@ -68,8 +46,6 @@ public class ResultadoCorridaHelperUtil {
     private static void retornarPosicaoFinalDaCorrida(List<ResultadoCorrida> resultadoCorridas) {
         int posicao = 1;
 
-        resultadoCorridas.sort(comparing(ResultadoCorrida::getTempoTotalProva));
-
         for (ResultadoCorrida resultadoCorrida : resultadoCorridas) {
             resultadoCorrida.setPosicao(posicao);
             posicao++;
@@ -78,6 +54,7 @@ public class ResultadoCorridaHelperUtil {
 
     private static Duration converteStringEmDuration(String time) {
         String[] times = time.replace(".", ":").split(":");
+
         return Duration.ofMinutes(Long.parseLong(times[0]))
                 .plusSeconds(Long.parseLong(times[1]))
                 .plusMillis(Long.parseLong(times[2]));
