@@ -10,9 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.util.Comparator.comparing;
+
 public class MelhorVoltaHelperUtil {
 
-    public static List<MelhorVolta> melhorVolta(DadosCorridaRepository repository) {
+    public static List<MelhorVolta> melhorVoltaPorPiloto(DadosCorridaRepository repository) {
         List<DadosCorrida> dadosCorridas = repository.findAll();
 
         Map<Integer, MelhorVolta> melhorVoltaMap = dadosCorridas.stream()
@@ -30,5 +32,14 @@ public class MelhorVoltaHelperUtil {
                         }
                 ));
         return new ArrayList<>(melhorVoltaMap.values());
+    }
+
+    public static MelhorVolta melhorVolta(DadosCorridaRepository repository) {
+        List<DadosCorrida> dadosCorridas = repository.findAll();
+
+        return dadosCorridas.stream()
+                .map(MelhorVolta::new)
+                .min(comparing(MelhorVolta::getMelhorTempo))
+                .get();
     }
 }

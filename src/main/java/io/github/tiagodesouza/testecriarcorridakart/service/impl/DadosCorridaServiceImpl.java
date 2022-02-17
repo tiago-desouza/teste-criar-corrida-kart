@@ -44,6 +44,11 @@ public class DadosCorridaServiceImpl implements DadosCorridaService {
 
     @Override
     public List<MelhorVolta> getMelhorVoltaPorPiloto() {
+        return MelhorVoltaHelperUtil.melhorVoltaPorPiloto(repository);
+    }
+
+    @Override
+    public MelhorVolta getMelhorVolta() {
         return MelhorVoltaHelperUtil.melhorVolta(repository);
     }
 

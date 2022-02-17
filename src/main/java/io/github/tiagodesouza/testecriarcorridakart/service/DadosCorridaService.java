@@ -10,8 +10,14 @@ import java.util.List;
 public interface DadosCorridaService {
 
     void uploadDadosCorrida(MultipartFile file);
+
     List<DadosCorrida> getDadosCorrida();
+
     List<DadosCorrida> getDadosPorPiloto(Integer numeroPiloto);
+
     List<ResultadoCorrida> getResultadoCorrida();
+
     List<MelhorVolta> getMelhorVoltaPorPiloto();
+
+    MelhorVolta getMelhorVolta();
 }

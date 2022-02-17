@@ -46,4 +46,9 @@ public class DadosCorridaController {
     public List<MelhorVolta> getMelhorVoltaPorPiloto() {
         return service.getMelhorVoltaPorPiloto();
     }
+
+    @GetMapping("/melhorVolta")
+    public MelhorVolta getMelhorVolta(){
+        return service.getMelhorVolta();
+    }
 }
