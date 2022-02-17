@@ -1,6 +1,8 @@
 package io.github.tiagodesouza.testecriarcorridakart.controller;
 
+import io.github.tiagodesouza.testecriarcorridakart.controller.data.response.MelhorVoltaResponseDto;
 import io.github.tiagodesouza.testecriarcorridakart.model.DadosCorrida;
+import io.github.tiagodesouza.testecriarcorridakart.model.MelhorVolta;
 import io.github.tiagodesouza.testecriarcorridakart.model.ResultadoCorrida;
 import io.github.tiagodesouza.testecriarcorridakart.service.DadosCorridaService;
 import org.springframework.http.HttpStatus;
@@ -38,5 +40,10 @@ public class DadosCorridaController {
     @GetMapping("/resultado")
     public List<ResultadoCorrida> getResultadoCorrida(){
         return service.getResultadoCorrida();
+    }
+
+    @GetMapping("/melhorVoltaPorPiloto")
+    public List<MelhorVolta> getMelhorVoltaPorPiloto() {
+        return service.getMelhorVoltaPorPiloto();
     }
 }

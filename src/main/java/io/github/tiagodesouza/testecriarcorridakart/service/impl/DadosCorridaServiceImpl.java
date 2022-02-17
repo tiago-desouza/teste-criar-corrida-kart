@@ -1,10 +1,12 @@
 package io.github.tiagodesouza.testecriarcorridakart.service.impl;
 
 import io.github.tiagodesouza.testecriarcorridakart.model.DadosCorrida;
+import io.github.tiagodesouza.testecriarcorridakart.model.MelhorVolta;
 import io.github.tiagodesouza.testecriarcorridakart.model.ResultadoCorrida;
 import io.github.tiagodesouza.testecriarcorridakart.repository.DadosCorridaRepository;
 import io.github.tiagodesouza.testecriarcorridakart.service.DadosCorridaService;
 import io.github.tiagodesouza.testecriarcorridakart.service.util.FileHelperDadosCorridaUtil;
+import io.github.tiagodesouza.testecriarcorridakart.service.util.MelhorVoltaHelperUtil;
 import io.github.tiagodesouza.testecriarcorridakart.service.util.ResultadoCorridaHelperUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +40,11 @@ public class DadosCorridaServiceImpl implements DadosCorridaService {
     @Override
     public List<ResultadoCorrida> getResultadoCorrida() {
         return ResultadoCorridaHelperUtil.resultado(repository);
+    }
+
+    @Override
+    public List<MelhorVolta> getMelhorVoltaPorPiloto() {
+        return MelhorVoltaHelperUtil.melhorVolta(repository);
     }
 
 }

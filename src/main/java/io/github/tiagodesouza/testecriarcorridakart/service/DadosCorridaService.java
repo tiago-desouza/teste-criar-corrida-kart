@@ -1,6 +1,7 @@
 package io.github.tiagodesouza.testecriarcorridakart.service;
 
 import io.github.tiagodesouza.testecriarcorridakart.model.DadosCorrida;
+import io.github.tiagodesouza.testecriarcorridakart.model.MelhorVolta;
 import io.github.tiagodesouza.testecriarcorridakart.model.ResultadoCorrida;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,4 +13,5 @@ public interface DadosCorridaService {
     List<DadosCorrida> getDadosCorrida();
     List<DadosCorrida> getDadosPorPiloto(Integer numeroPiloto);
     List<ResultadoCorrida> getResultadoCorrida();
+    List<MelhorVolta> getMelhorVoltaPorPiloto();
 }
