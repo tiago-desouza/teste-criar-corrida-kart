@@ -29,7 +29,7 @@ public class FileHelperDadosCorridaUtil {
                 dadosCorrida.setNumeroPiloto(Integer.parseInt(info[1]));
                 dadosCorrida.setNomePiloto(info[3]);
                 dadosCorrida.setVolta(Integer.parseInt(info[4]));
-                dadosCorrida.setTempoDaVolta(info[5]);
+                dadosCorrida.setTempoDaVolta("00:0" + info[5]);
                 dadosCorrida.setVelocidadeMedia(Double.parseDouble(info[6].replace(",", ".")));
                 dadosCorridas.add(dadosCorrida);
             });

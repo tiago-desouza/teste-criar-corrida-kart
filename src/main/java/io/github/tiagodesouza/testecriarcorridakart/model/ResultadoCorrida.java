@@ -3,14 +3,19 @@ package io.github.tiagodesouza.testecriarcorridakart.model;
 import java.util.Objects;
 
 public class ResultadoCorrida {
-    /*
-    Posição Chegada, Código Piloto, Nome Piloto, Qtde Voltas Completadas e Tempo Total de Prova
-     */
+
     private Integer posicao;
     private Integer numeroPiloto;
     private String nomePiloto;
     private Integer qteVoltasCompletadas;
     private String tempoTotalProva;
+
+    public ResultadoCorrida(DadosCorrida dadosCorrida) {
+        this.numeroPiloto = dadosCorrida.getNumeroPiloto();
+        this.nomePiloto = dadosCorrida.getNomePiloto();
+        this.qteVoltasCompletadas = dadosCorrida.getVolta();
+        this.tempoTotalProva = dadosCorrida.getTempoDaVolta();
+    }
 
     public Integer getPosicao() {
         return posicao;

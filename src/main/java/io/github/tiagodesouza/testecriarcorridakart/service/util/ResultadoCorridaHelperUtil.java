@@ -5,6 +5,9 @@ import io.github.tiagodesouza.testecriarcorridakart.model.ResultadoCorrida;
 import io.github.tiagodesouza.testecriarcorridakart.repository.DadosCorridaRepository;
 
 import java.time.Duration;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAmount;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,16 +21,10 @@ public class ResultadoCorridaHelperUtil {
         List<DadosCorrida> dadosCorridas = repository.findAll();
 
         Map<Integer, ResultadoCorrida> resultadoCorridaMap = dadosCorridas.stream()
-                .map(dadosCorrida -> {
-                    ResultadoCorrida resultadoCorrida = new ResultadoCorrida();
-                    resultadoCorrida.setNumeroPiloto(dadosCorrida.getNumeroPiloto());
-                    resultadoCorrida.setNomePiloto(dadosCorrida.getNomePiloto());
-                    resultadoCorrida.setQteVoltasCompletadas(dadosCorrida.getVolta());
-                    resultadoCorrida.setTempoTotalProva(dadosCorrida.getTempoDaVolta());
-                    return resultadoCorrida;
-                }).collect(Collectors.toMap(ResultadoCorrida::getNumeroPiloto, resultadoCorrida -> resultadoCorrida, (t, t2) -> {
-                    Duration time = converteStringEmDuration(t.getTempoTotalProva()).plus(converteStringEmDuration(t2.getTempoTotalProva()));
-                    t.setTempoTotalProva(converteDurationEmString(time));
+                .map(ResultadoCorrida::new)
+                .collect(Collectors.toMap(ResultadoCorrida::getNumeroPiloto, resultadoCorrida -> resultadoCorrida, (t, t2) -> {
+                    String time = plus(t.getTempoTotalProva(), t2.getTempoTotalProva());
+                    t.setTempoTotalProva(time);
                     t.setQteVoltasCompletadas(t2.getQteVoltasCompletadas());
                     return t;
                 }));
@@ -43,6 +40,16 @@ public class ResultadoCorridaHelperUtil {
         return resultadoCorridas;
     }
 
+    private static String plus(String tempo, String tempo1) {
+        LocalTime p1 = LocalTime.parse(tempo);
+        LocalTime p2 = LocalTime.parse(tempo1);
+        return p1.plus(toDuration(p2)).toString();
+    }
+
+    private static Duration toDuration(LocalTime p2) {
+        return Duration.ofNanos(p2.toNanoOfDay());
+    }
+
     private static void retornarPosicaoFinalDaCorrida(List<ResultadoCorrida> resultadoCorridas) {
         int posicao = 1;
 
@@ -50,22 +57,5 @@ public class ResultadoCorridaHelperUtil {
             resultadoCorrida.setPosicao(posicao);
             posicao++;
         }
-    }
-
-    private static Duration converteStringEmDuration(String time) {
-        String[] times = time.replace(".", ":").split(":");
-
-        return Duration.ofMinutes(Long.parseLong(times[0]))
-                .plusSeconds(Long.parseLong(times[1]))
-                .plusMillis(Long.parseLong(times[2]));
-    }
-
-    private static String converteDurationEmString(Duration duration) {
-
-        String time = duration.toString();
-
-        return time.replace("PT", "")
-                .replace("M", ":")
-                .replace("S", "");
     }
 }
